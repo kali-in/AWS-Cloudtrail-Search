@@ -2,7 +2,7 @@
 
 Welcome to the `AWS Cloudtrail Search` tool's home.
 
-The tool can be accessed at [https://cloudtrail-events-react.pages.dev/](https://cloudtrail-events-react.pages.dev/)
+The tool can be accessed at [https://aws-cloudtrail-search.pages.dev/](https://aws-cloudtrail-search.pages.dev/)
 
 ## Youtube Video showing a demo of the tool
 

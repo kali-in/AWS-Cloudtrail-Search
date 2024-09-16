@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -24,18 +24,19 @@ const Footer = () => {
 };
 
 function App() {
-  const [search, setSearch] = useState('');
+const [search, setSearch] = useState('');
  return (
     <div>
       <Container>
-        <h1 className='text-center mt-4'>AWS Cloudtrail Search</h1>
+        <h1 className='text-center mt-4'>AWS Cloudtrail EventName Search</h1>
         <Form>
           <InputGroup className='my-3'>
 
             {/* onChange for search */}
             <Form.Control
               onChange={(e) => setSearch(e.target.value)}
-              placeholder='Search Event Name'
+              placeholder='Search for CloudTrail Event Names'
+              autoFocus
             />
           </InputGroup>
         </Form>

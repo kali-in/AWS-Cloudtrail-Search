@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -25,6 +25,32 @@ const Footer = () => {
 
 function App() {
 const [search, setSearch] = useState('');
+const [isFocused, setIsFocused] = useState(false);
+const searchInputRef = useRef(null);
+
+useEffect(() => {
+  const handleKeyPress = (event) => {
+    if (event.key === '/' && document.activeElement.tagName !== 'INPUT') {
+      event.preventDefault();
+      searchInputRef.current?.focus();
+    }
+  };
+
+  document.addEventListener('keydown', handleKeyPress);
+
+  // Cleanup function to remove the event listener
+  return () => {
+    document.removeEventListener('keydown', handleKeyPress);
+  };
+}, []); // Empty dependency array means this effect runs once on mount
+
+const inputStyle = {
+  '::placeholder': {
+    color: isFocused ? '#999' : '#ccc',
+    opacity: isFocused ? '1' : '0.7',
+  }
+};
+
  return (
     <div>
       <Container>
@@ -34,9 +60,15 @@ const [search, setSearch] = useState('');
 
             {/* onChange for search */}
             <Form.Control
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder='Search for CloudTrail Event Names'
               autoFocus
+              ref={searchInputRef}
+              onChange={(e) => setSearch(e.target.value)}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              placeholder={isFocused ? 'Search for CloudTrail Event Names' : 'Type / to start searching'}
+              value={search}
+              id="searchInput"
+              style={inputStyle}
             />
           </InputGroup>
         </Form>

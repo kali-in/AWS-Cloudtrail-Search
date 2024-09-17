@@ -1,6 +1,6 @@
 {
-  "name": "filter-contact-list-react-new",
-  "version": "0.1.0",
+  "name": "aws-cloudtrail-event-name-search",
+  "version": "2.0.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",

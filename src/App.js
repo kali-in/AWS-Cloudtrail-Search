@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -23,8 +23,7 @@ const Footer = () => {
   );
 };
 
-const Header = ({setSearch}) => {
-  
+const Header = ({ search, setSearch, isFocused, setIsFocused, searchInputRef, inputStyle }) => {
   return (
     <header className="sticky-top bg-light py-3 shadow-sm">
       <Container>
@@ -32,9 +31,15 @@ const Header = ({setSearch}) => {
         <Form>
           <InputGroup className='my-3'>
             <Form.Control
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder='Search for CloudTrail Event Names'
-              autoFocus
+               ref={searchInputRef}
+               onChange={(e) => setSearch(e.target.value)}
+               onFocus={() => setIsFocused(true)}
+               onBlur={() => setIsFocused(false)}
+               placeholder={isFocused ? 'Search for CloudTrail Event Names' : 'Type / to start searching...'}
+               value={search}
+               id="searchInput"
+               style={inputStyle}
+               autoFocus
             />
           </InputGroup>
         </Form>
@@ -45,10 +50,39 @@ const Header = ({setSearch}) => {
 
 function App() {
   const [search, setSearch] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
+  const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === '/' && document.activeElement.tagName !== 'INPUT') {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+  
+    document.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, []);
+
+  const inputStyle = {
+    '::placeholder': {
+      color: isFocused ? '#999' : '#ccc',
+      opacity: isFocused ? '1' : '0.7',
+    }
+  };
 
   return (
     <div className="d-flex flex-column min-vh-100">
-      <Header  setSearch={setSearch}/>
+      <Header   search={search}
+        setSearch={setSearch}
+        isFocused={isFocused}
+        setIsFocused={setIsFocused}
+        searchInputRef={searchInputRef}
+        inputStyle={inputStyle}/>
       <Container className="flex-grow-1 mt-4">
         <Table striped bordered hover>
           <thead>

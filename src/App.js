@@ -6,6 +6,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useSearchParams } from 'react-router-dom';
 
 import { data } from './data.js';
 
@@ -49,7 +50,8 @@ const Header = ({ search, setSearch, isFocused, setIsFocused, searchInputRef, in
 };
 
 function App() {
-  const [search, setSearch] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get('q') || '');
   const [isFocused, setIsFocused] = useState(false);
   const searchInputRef = useRef(null);
 
@@ -67,6 +69,15 @@ function App() {
       document.removeEventListener('keydown', handleKeyPress);
     };
   }, []);
+
+  // Update URL when search changes
+  useEffect(() => {
+    if (search) {
+      setSearchParams({ q: search });
+    } else {
+      setSearchParams({});
+    }
+  }, [search, setSearchParams]);
 
   const inputStyle = {
     '::placeholder': {

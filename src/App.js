@@ -7,6 +7,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useSearchParams } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { data } from './data.js';
 
@@ -86,14 +88,32 @@ function App() {
     }
   };
 
+  const handleCopy = async (eventName) => {
+    try {
+      await navigator.clipboard.writeText(eventName);
+      toast.success(`Copied: ${eventName}`, {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (err) {
+      toast.error('Failed to copy text to clipboard');
+    }
+  };
+
   return (
     <div className="d-flex flex-column min-vh-100">
-      <Header   search={search}
+      <Header 
+        search={search}
         setSearch={setSearch}
         isFocused={isFocused}
         setIsFocused={setIsFocused}
         searchInputRef={searchInputRef}
-        inputStyle={inputStyle}/>
+        inputStyle={inputStyle}
+      />
       <Container className="flex-grow-1 mt-4">
         <Table striped bordered hover>
           <thead>
@@ -110,17 +130,21 @@ function App() {
               })
               .map((item) => (
                 <tr key={item.id}>
-                  <td onClick={async () => {
-                    await navigator.clipboard.writeText(item.eventName);
-                    alert("Copied the text: " + item.eventName);
-                  }}>{item.eventName}</td>
+                  <td 
+                    onClick={() => handleCopy(item.eventName)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {item.eventName}
+                  </td>
                 </tr>
               ))}
           </tbody>
         </Table>
       </Container>
       <Footer />
+      <ToastContainer />
     </div>
   );
 }
+
 export default App;
